@@ -37,7 +37,7 @@ public class UI_Inventary : UI_Base
                 if (IsItemExistInPanelList(InventaryCharacter.itemsMainInventary[i]))
                 { 
                     var curItem = GetPlaceByNameItem(InventaryCharacter.itemsMainInventary[i]); 
-                    curItem.textAmount.text = UtilsClass.GetByFormatTextByIndex(InventaryCharacter.itemsMainInventary[i], 1);
+                    curItem.TextAmount.text = UtilsClass.GetByFormatTextByIndex(InventaryCharacter.itemsMainInventary[i], 1);
                 }
                 if (!IsItemExistInPanelList(InventaryCharacter.itemsMainInventary[i]))
                 { 
@@ -48,15 +48,15 @@ public class UI_Inventary : UI_Base
                     var go = Factorys.instance.FactoryInventaryItem.GetNewInstance();
                     go.transform.SetParent(freePlace.gameObject.transform);
                     go.transform.position = freePlace.transformPlace.position;
-                    freePlace.itemImage = go.GetComponent<Image>();
+                    freePlace.ItemImage = go.GetComponent<Image>();
                     var textAmount = go.GetComponentInChildren<Text>();
-                    freePlace.itemImage.material = GameAsset.i.m_unlitDefault;
+                    freePlace.ItemImage.material = GameAsset.i.m_unlitDefault;
                     var nameTexture = UtilsClass.GetByFormatTextByIndex(InventaryCharacter.itemsMainInventary[i], 0);
                     var amount = UtilsClass.GetByFormatTextByIndex(InventaryCharacter.itemsMainInventary[i], 1);
-                    freePlace.itemImage.sprite = GetIconByName(nameTexture);
-                    freePlace.textAmount = textAmount;
+                    freePlace.ItemImage.sprite = GetIconByName(nameTexture);
+                    freePlace.TextAmount = textAmount;
                     go.name = nameTexture + "," + amount;
-                    freePlace.imageName = go.name;
+                    freePlace.ImageName = go.name;
 
                     freePlace.isFree = false;
                     if (amount != null)
@@ -76,10 +76,10 @@ public class UI_Inventary : UI_Base
         foreach (var item in upInventaryPanels)
         {
            
-            var image = item.itemImage;
-            if(item.itemImage != null) {
+            var image = item.ItemImage;
+            if(item.ItemImage != null) {
                 
-                var curImageName = UtilsClass.GetByFormatTextByIndex(item.imageName, 0);
+                var curImageName = UtilsClass.GetByFormatTextByIndex(item.ImageName, 0);
                 if (curImageName == nameMain) { return true; } 
             }  
         }
@@ -88,7 +88,7 @@ public class UI_Inventary : UI_Base
     void DestroyItemInBothInventry(string itemName)
     {
         var goUp = GetItemInUpInventaryPanelList(itemName);
-        if(goUp!= null) { var inventaryPlace = goUp.transform.GetComponentInParent<InventaryPlace>(); inventaryPlace.isFree = true; inventaryPlace.imageName = null; Destroy(goUp.gameObject); }
+        if(goUp!= null) { var inventaryPlace = goUp.transform.GetComponentInParent<InventaryPlace>(); inventaryPlace.isFree = true; inventaryPlace.ImageName = null; Destroy(goUp.gameObject); }
         var goDown = GetItemInDownInventaryPanelList(itemName);
         if (goDown != null) { Destroy(goDown.gameObject); }
     }
@@ -99,11 +99,11 @@ public class UI_Inventary : UI_Base
         foreach (var item in upInventaryPanels)
         {
 
-            var image = item.itemImage;
-            if (item.itemImage != null)
+            var image = item.ItemImage;
+            if (item.ItemImage != null)
             {
 
-                var curImageName = UtilsClass.GetByFormatTextByIndex(item.imageName, 0);
+                var curImageName = UtilsClass.GetByFormatTextByIndex(item.ImageName, 0);
                 if (curImageName == nameMain) { return image.gameObject; }
             }
         }
@@ -116,11 +116,11 @@ public class UI_Inventary : UI_Base
         foreach (var item in downInventaryPanels)
         {
 
-            var image = item.itemImage;
-            if (item.itemImage != null)
+            var image = item.ItemImage;
+            if (item.ItemImage != null)
             {
 
-                var curImageName = UtilsClass.GetByFormatTextByIndex(item.imageName, 0);
+                var curImageName = UtilsClass.GetByFormatTextByIndex(item.ImageName, 0);
                 if (curImageName == nameMain) { return image.gameObject; }
             }
         }
@@ -153,7 +153,7 @@ public class UI_Inventary : UI_Base
 
             if (item.name != null)
             {
-                var curImageName = UtilsClass.GetByFormatTextByIndex(item.imageName, 0);
+                var curImageName = UtilsClass.GetByFormatTextByIndex(item.ImageName, 0);
                 if (curImageName == nameMain) { return item; }   
             }
         }
