@@ -5,33 +5,30 @@ using Pathfinding;
 
 public class ThrowGranata : State
 {
-    [SerializeField] private Transform _start, _center, _end;
-    [SerializeField] private int _count = 15;
-    [SerializeField] List<Vector3> listPositions = new List<Vector3>();
-    [SerializeField] Queue<Vector3> QueuePos = new Queue<Vector3>();
-    [SerializeField] LineRenderer lineRenderer;
-  
-    [SerializeField] GameObject prefabTrill;
-    [SerializeField] List<GameObject> prefabTrillLst;
-    [SerializeField] float smooth = 10f;
-    [SerializeField] float limit = 26f;
-    Vector3 mouseFinalPos;
-    [SerializeField] Vector3 offset;
+    private Transform _start, _center, _end;
+    private int _countLineObj = 15;
+    private List<Vector3> listPositions = new List<Vector3>();
+    private Queue<Vector3> QueuePos = new Queue<Vector3>();
+    private LineRenderer lineRenderer;
+    private List<GameObject> prefabTrillLst;
+    private float smooth = 10f;
+    private float limit = 26f;
 
-    [SerializeField] Vector3 TargetPoint;
-    [SerializeField] GameObject prefGranate;
+    Vector3 mouseFinalPos;
+    private Vector3 offset;
+    private Vector3 TargetPoint;
+    private GameObject prefGranate;
    
-    [SerializeField] bool canThrow = false;
-    Transform transform;
-    AILerp aILerp;
-    [SerializeField] bool canSecondThow = true;
+    private bool canThrow = false;
+    private Transform transform;
+    private AILerp aILerp;
+    private bool canSecondThow = true;
     private Character character;
-    public ThrowGranata(CharacterSetup characterSetup, LineRenderer lineRenderer) {
-        this.lineRenderer = lineRenderer;
-        this.transform = transform;
-        this.aILerp = characterSetup.aiLerp;
-        this.transform = characterSetup.characterTransform;
-        this.character = characterSetup.character;
+    public ThrowGranata(CharacterSetup character_Setup, LineRenderer line_Renderer) {
+        this.lineRenderer = line_Renderer;
+        this.aILerp = character_Setup.AiLerp;
+        this.transform = character_Setup.CharacterTransform;
+        this.character = character_Setup.Character;
         _start = transform;
         _center = transform.Find( "CentrTraectory");
         prefabTrillLst = new List<GameObject>();
@@ -52,7 +49,7 @@ public class ThrowGranata : State
     [SerializeField] Transform granataPointStart;
     public override void Update()
     {
-        if (character.inventary.CheckingBullet("cylinder"))
+        if (character.Inventary.CheckingBullet("cylinder"))
         {
             base.Update();
             if (canThrow)
@@ -99,10 +96,7 @@ public class ThrowGranata : State
                         for (int i = 0; i < 16; i++)
                         {
                             var go = Factorys.instance.FactoryTrailGranate.GetNewInstance(transform);
-                            Debug.Log(go.gameObject.name);
                             prefabTrillLst.Add(go.gameObject);
-
-
                         }
                     }
                     var mousPos = UtilsClass.GetMouseWorldPosition();
@@ -111,12 +105,11 @@ public class ThrowGranata : State
                     var targetPos = transform.position + direction * limit;
                     if (mouseFinalPos != null)
                     {
-                        if (mouseFinalPos != mousPos && dist < limit) { EvaluateSlerpPoints(_start.position, mousPos, _center.position, _count); }
-                        if (mouseFinalPos != mousPos && dist > limit) { EvaluateSlerpPoints(_start.position, targetPos, _center.position, _count); }
+                        if (mouseFinalPos != mousPos && dist < limit) { EvaluateSlerpPoints(_start.position, mousPos, _center.position, _countLineObj); }
+                        if (mouseFinalPos != mousPos && dist > limit) { EvaluateSlerpPoints(_start.position, targetPos, _center.position, _countLineObj); }
                         else return;
                     }
-                    else EvaluateSlerpPoints(_start.position, mousPos, _center.position, _count);
-                    Debug.Log(prefabTrillLst.Count);
+                    else EvaluateSlerpPoints(_start.position, mousPos, _center.position, _countLineObj);
                 }
             }
         }
@@ -168,7 +161,6 @@ public class ThrowGranata : State
             }, 1f);
             canThrow = false;
             Character.OnShoot.Invoke();
-            Debug.Log(QueuePos.Count);
         }
     }
 }

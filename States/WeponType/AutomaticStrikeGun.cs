@@ -28,11 +28,11 @@ public class AutomaticStrikeGun : State, Enemy.IEnemyTargetable
 
     public AutomaticStrikeGun(CharacterSetup characterSetup, GunSetup gunSetup)
     {
-        this.animator = characterSetup.animator;
-        this.transform = characterSetup.characterTransform;
-        this._aiLerp = characterSetup.aiLerp;
-        this._enemyVision = characterSetup.enemyVision;
-        this._target = characterSetup.wayTargetPoint;
+        this.animator = characterSetup.Animator;
+        this.transform = characterSetup.CharacterTransform;
+        this._aiLerp = characterSetup.AiLerp;
+        this._enemyVision = characterSetup.EnemyVision;
+        this._target = characterSetup.WayTargetPoint;
         this._gunSetup = gunSetup;
     }
 

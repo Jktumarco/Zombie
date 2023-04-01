@@ -39,7 +39,7 @@ public class UI_quickInventary : Item
         {
             mainPaneleIcon.enabled = true;
             mainPaneleIcon.sprite = GameLoader.instance.GetIconByName(itemImage.sprite.name);
-            charactersController.curCharacter.OnChangeState(itemImage.sprite.name);
+            charactersController.CurCharacter.OnChangeState(itemImage.sprite.name);
         }
     }
 

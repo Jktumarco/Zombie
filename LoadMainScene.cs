@@ -10,6 +10,7 @@ public class LoadMainScene : MonoBehaviour
 
     public Slider loadingBar;
     public Text textLoading;
+    [SerializeField] Animator loagingAnim;
 
     public void Start()
     {
@@ -19,12 +20,10 @@ public class LoadMainScene : MonoBehaviour
     IEnumerator LoadAsyncScene()
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(1);
-
-        while (!asyncLoad.isDone)
+        loagingAnim.Play("loaging");
+        while (asyncLoad.isDone)
         {
-            float progress = asyncLoad.progress / 0.9f;
-            loadingBar.value = progress;
-            textLoading.text = string.Format("{0:0}%", progress*100);
+            loagingAnim.Play("loaging");
             yield return null;
         }
     }

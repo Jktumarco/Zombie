@@ -20,8 +20,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] float damageAttack;
 
     [SerializeField] Behind behind;
-    float distantionToCharacter;
-    Transform selectTexture;
+    private float distantionToCharacter;
+    private Transform selectTexture;
 
     public interface IEnemyTargetable
     {
@@ -40,10 +40,7 @@ public class Enemy : MonoBehaviour
         character = FindObjectOfType<Character>().TargetForEnemy;
         enemySetup = GetComponent<CharacterSetup>();
         _stateEnemyMachine = new StateMachine();
-        statesEnemy.Add(new ShockWave(transform));
-        statesEnemy.Add(new EnemyIdleState(enemySetup));
-        statesEnemy.Add(new EnemyFollowState(enemySetup, character));
-        statesEnemy.Add(new EnemyAttackState(enemySetup, character.transform, character));
+        LoadAllState();
         _stateEnemyMachine.Initialize(GetStateByType<EnemyIdleState>(statesEnemy) as EnemyIdleState);
         _enemyState = EnemyState.isIdle;
     }
@@ -52,21 +49,22 @@ public class Enemy : MonoBehaviour
     {
         if (character != null)
         {
-            distantionToCharacter = Vector3.Distance(character.transform.position, enemySetup.characterTransform.position);
+            UpdateDistantionToCharacter();
         }
         
         if (!IsDead() && character != null)
         {
-            //IsVisibleSelectTexture();
-            //if (CanAttack() && _enemyState == EnemyState.isFollowing) { _enemyState = EnemyState.isAttack; OnChangeState.Invoke(); }
-            //if (!CanAttack() && behind.isVisible) { _enemyState = EnemyState.isFollowing; OnChangeState.Invoke(); }
-            //if (!CanAttack() &&_enemyState == EnemyState.isAttack) { _enemyState = EnemyState.isFollowing; OnChangeState.Invoke(); }
-            //if (!CanAttack() && _enemyState == EnemyState.isFollowing) { _enemyState = EnemyState.isFollowing; OnChangeState.Invoke(); }
-
             if (CanFollow()) { _enemyState = EnemyState.isFollowing; OnChangeState.Invoke(); }
             if (CanAttack()) { _enemyState = EnemyState.isAttack; OnChangeState.Invoke(); }
             _stateEnemyMachine.CurrentState.Update();
         }
+    }
+    void LoadAllState()
+    {
+        statesEnemy.Add(new ShockWave(transform));
+        statesEnemy.Add(new EnemyIdleState(enemySetup));
+        statesEnemy.Add(new EnemyFollowState(enemySetup, character));
+        statesEnemy.Add(new EnemyAttackState(enemySetup, character.transform, character));
     }
     bool CanAttack() { 
         if (distantionToCharacter >=0f && distantionToCharacter <=4f)
@@ -92,7 +90,7 @@ public class Enemy : MonoBehaviour
         if (IsDead())
         {
             _enemyState = EnemyState.isDeath; OnChangeState.Invoke();
-            enemySetup.aIPath.canMove = false;
+            enemySetup.AIPath.canMove = false;
             //selectTexture.gameObject.SetActive(false);
             Destroy(this);
             GetRandomBonus();
@@ -112,12 +110,10 @@ public class Enemy : MonoBehaviour
         if (IsDead())
         {
             _enemyState = EnemyState.isDeath; OnChangeState.Invoke();
-            enemySetup.aIPath.canMove = false;
-            //selectTexture.gameObject.SetActive(false);
+            enemySetup.AIPath.canMove = false;
             AudioController.instance.PlaySFX("zombyDeath");
             Destroy(this);
-            GetRandomBonus();
-            
+            GetRandomBonus(); 
         }
     }
     void IsVisibleSelectTexture()
@@ -128,12 +124,15 @@ public class Enemy : MonoBehaviour
         }
         else selectTexture.gameObject.SetActive(false);
     }
-
+    void UpdateDistantionToCharacter()
+    {
+        distantionToCharacter = Vector3.Distance(character.transform.position, enemySetup.CharacterTransform.position);
+    }
     void SwithState()
     {
         switch (_enemyState)
         {
-            case EnemyState.isDeath: enemySetup.animator.Play("Death");
+            case EnemyState.isDeath: enemySetup.Animator.Play("Death");
                 break;
             case EnemyState.isIdle:
                 break;
@@ -168,12 +167,10 @@ public class Enemy : MonoBehaviour
         if (IsDead())
         {
             _enemyState = EnemyState.isDeath; OnChangeState.Invoke();
-            enemySetup.aIPath.canMove = false;
-            //selectTexture.gameObject.SetActive(false);
+            enemySetup.AIPath.canMove = false;
             AudioController.instance.PlaySFX("zombyDeath");
             Destroy(this);
-            GetRandomBonus();
-            
+            GetRandomBonus(); 
         }
     }
     void GetRandomBonus() {

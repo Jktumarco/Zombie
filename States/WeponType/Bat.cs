@@ -19,11 +19,11 @@ public class Bat : State
 
     public Bat(CharacterSetup characterSetup, BatSetup knifeSetup)
     {
-        this.animator = characterSetup.animator;
+        this.animator = characterSetup.Animator;
         this.kniffeSetup = knifeSetup;
-        this.transform = characterSetup.characterTransform;
-        this._aiLerp = characterSetup.aiLerp;
-        this._wayPoint = characterSetup.wayTargetPoint;
+        this.transform = characterSetup.CharacterTransform;
+        this._aiLerp = characterSetup.AiLerp;
+        this._wayPoint = characterSetup.WayTargetPoint;
         this._characterSetup = characterSetup;
         
 

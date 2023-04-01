@@ -13,11 +13,11 @@ public class EnemyAttackState : State
     float _timeBetweenAttack = 1f;
     public EnemyAttackState(CharacterSetup characterSetup, Transform target, Character character)
     { 
-        this.animator = characterSetup.animator; 
-        this.aiPath = characterSetup.aIPath;
-        this.enemyVision = characterSetup.enemyVision;
+        this.animator = characterSetup.Animator; 
+        this.aiPath = characterSetup.AIPath;
+        this.enemyVision = characterSetup.EnemyVision;
         this.target = target;
-        this.enemyTransform = characterSetup.characterTransform;
+        this.enemyTransform = characterSetup.CharacterTransform;
         this.character = character;
     }
     public override void Update()

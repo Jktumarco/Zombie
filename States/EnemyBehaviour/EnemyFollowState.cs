@@ -11,11 +11,11 @@ public class EnemyFollowState : State
     float damage = 10f;
     public EnemyFollowState(CharacterSetup characterSetup, Character target)
     { 
-        this.animator = characterSetup.animator; 
-        this.aiPath = characterSetup.aIPath;
-        this.enemyVision = characterSetup.enemyVision;
+        this.animator = characterSetup.Animator; 
+        this.aiPath = characterSetup.AIPath;
+        this.enemyVision = characterSetup.EnemyVision;
         this.targetFollow = target;
-        this.enemyPos = characterSetup.characterTransform;
+        this.enemyPos = characterSetup.CharacterTransform;
         
     }
     public override void Update()

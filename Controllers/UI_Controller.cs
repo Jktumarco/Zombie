@@ -46,7 +46,7 @@ public class UI_Controller : MonoBehaviour
         inventaryPlaces = UI_QuickInventaryDownPanelRoot.gameObject.GetComponentsInChildren<InventaryPlace>();
     }
     public void PanelBlockRaycastTarget(bool targetRay) { backPanelBlockRay.raycastTarget = targetRay; }
-    public void DieWindow()
+    private void DieWindow()
     {
         canvasDie.gameObject.SetActive(true);
     }

@@ -14,11 +14,11 @@ public class OnDropQuickInventary : MonoBehaviour, IDropHandler
         if (eventData.pointerDrag != null)
         {
             var onDrop = eventData.pointerDrag.GetComponent<OnDropQuickInventary>();
-            if (onDrop == null && !inventaryPlace.isFree) 
+            if (onDrop == null && !inventaryPlace.IsFree) 
             {
                 DropToPlaceToReturn(eventData);
             }
-            if (onDrop == null && inventaryPlace.isFree)
+            if (onDrop == null && inventaryPlace.IsFree)
             {
                 DropToPlace(eventData);
             }

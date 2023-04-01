@@ -4,19 +4,13 @@ using CodeMonkey.Utils;
 
 public class Inventary: MonoBehaviour
 {
-    [SerializeField] public static string lastDropItem;
-    public List<string> itemsMainInventary;
-    public List<string> itemsQuickInventary;
+    [SerializeField] static string lastDropItem;
+    [SerializeField] List<string> itemsMainInventary;
+    [SerializeField] List<string> itemsQuickInventary;
 
-    public void DeleteFromMainInventary(string item)
-    {
-       var curItem = itemsMainInventary.Find((i) => GetFormatingName(i) == item);
-        itemsMainInventary.Remove(curItem);
-    }
-    public void DeleteFromQuickInventary(string item) {
-        var curItem = itemsQuickInventary.Find((i) => GetFormatingName(i) == item);
-        itemsQuickInventary.Remove(curItem);
-    }
+    public List<string> ItemsMainInventary { get => itemsMainInventary; set => itemsMainInventary = value; }
+    public List<string> ItemsQuickInventary { get => itemsQuickInventary; set => itemsQuickInventary = value; }
+
     private void OnEnable()
     {
         Character.OnShoot += DeleteBullet;
@@ -32,12 +26,28 @@ public class Inventary: MonoBehaviour
         UI_Controller.instance.OnUseHealth += CheckAndRemoveItemZeroAmount;
         UI_Controller.instance.OnStart += DefaultInventary;
     }
+    public void DeleteFromMainInventary(string item)
+    {
+        var curItem = ItemsMainInventary.Find((i) => GetFormatingName(i) == item);
+        ItemsMainInventary.Remove(curItem);
+    }
+    public void DeleteFromQuickInventary(string item)
+    {
+        var curItem = ItemsQuickInventary.Find((i) => GetFormatingName(i) == item);
+        ItemsQuickInventary.Remove(curItem);
+    }
     private void UseHealth()
     {
         RemoveBullet("item_health");
         AudioController.instance.PlaySFX("health_1");
     }
-    public void DefaultInventary() { itemsMainInventary.Clear(); itemsQuickInventary.Clear(); itemsQuickInventary.Add("gun"); itemsMainInventary.Add("imagazine_gun,100"); }
+    public void DefaultInventary()
+    { 
+        ItemsMainInventary.Clear();
+        ItemsQuickInventary.Clear(); 
+        ItemsQuickInventary.Add("gun");
+        ItemsMainInventary.Add("imagazine_gun,100"); 
+    }
 
     void DeleteBullet()
     {
@@ -67,31 +77,31 @@ public class Inventary: MonoBehaviour
         var newAmount = int.Parse(GetFormatingAmount(bullet));
         newAmount--;
         var newName = itemName + ',' + newAmount.ToString();
-        itemsMainInventary.Remove(bullet);
-        itemsMainInventary.Add(newName);
+        ItemsMainInventary.Remove(bullet);
+        ItemsMainInventary.Add(newName);
     }
     void CheckAndRemoveItemZeroAmount() {
-        var bullet = itemsMainInventary.Find((i) => GetFormatingAmount(i) == "0");
+        var bullet = ItemsMainInventary.Find((i) => GetFormatingAmount(i) == "0");
         if (bullet != null) { 
             UI_Controller.instance.OnDestroyItemFromAllInventary?.Invoke(bullet); 
-            itemsMainInventary.Remove(bullet); }   
-        var bulletFromQuickInventary = itemsQuickInventary.Find((i) => GetFormatingName(i) == "0");
+            ItemsMainInventary.Remove(bullet); }   
+        var bulletFromQuickInventary = ItemsQuickInventary.Find((i) => GetFormatingName(i) == "0");
         if (bulletFromQuickInventary != null) {
             UI_Controller.instance?.OnDestroyItemFromAllInventary?.Invoke(bulletFromQuickInventary); 
-            itemsQuickInventary.Remove(bulletFromQuickInventary);
+            ItemsQuickInventary.Remove(bulletFromQuickInventary);
         } 
     }
     string FindInInventaryes(string nameBullet)
     {
-        var bullet = itemsMainInventary.Find((i) => GetFormatingName(i) == nameBullet);
+        var bullet = ItemsMainInventary.Find((i) => GetFormatingName(i) == nameBullet);
         if (bullet != null) { return bullet; }
-        var bulletFromQuickInventary = itemsQuickInventary.Find((i) => GetFormatingName(i) == nameBullet);
+        var bulletFromQuickInventary = ItemsQuickInventary.Find((i) => GetFormatingName(i) == nameBullet);
         if (bulletFromQuickInventary != null) { return bulletFromQuickInventary; }
         return default;
     }
     public void AddToMainInventary(string itemName) 
     {
-        var amountItem = itemsMainInventary.Find((i) => GetFormatingName(i) == GetFormatingName(itemName));
+        var amountItem = ItemsMainInventary.Find((i) => GetFormatingName(i) == GetFormatingName(itemName));
        
         int amountItemInt = default;
         if (amountItem != null)
@@ -104,19 +114,19 @@ public class Inventary: MonoBehaviour
         {
             amountItemInt = int.Parse(GetFormatingAmount(itemName));
         }
-        itemsMainInventary.Add(itemName);
+        ItemsMainInventary.Add(itemName);
         List<string> listAllCurItem = new List<string>();
-        foreach (var item in itemsMainInventary)
+        foreach (var item in ItemsMainInventary)
         {
             listAllCurItem.Add(GetFormatingName(item));
         }
-        itemsMainInventary.RemoveAll((i) => GetFormatingName(i) == GetFormatingName(itemName));
-        itemsMainInventary.Add(GetFormatingName(itemName) + "," + amountItemInt);  
+        ItemsMainInventary.RemoveAll((i) => GetFormatingName(i) == GetFormatingName(itemName));
+        ItemsMainInventary.Add(GetFormatingName(itemName) + "," + amountItemInt);  
     }
     public bool CheckingBullet(string nameWeaponBullet)
     {
-        var curWeapon = itemsMainInventary.Find((b) => GetFormatingName(b) == nameWeaponBullet);
-        var curWeaponInQuickInvemtary = itemsQuickInventary.Find((b) => GetFormatingName(b) == nameWeaponBullet);
+        var curWeapon = ItemsMainInventary.Find((b) => GetFormatingName(b) == nameWeaponBullet);
+        var curWeaponInQuickInvemtary = ItemsQuickInventary.Find((b) => GetFormatingName(b) == nameWeaponBullet);
         if (curWeapon != null) { 
             var amount = GetFormatingAmount(curWeapon);
             if (int.Parse(amount) > 0) { return true; }
@@ -132,7 +142,7 @@ public class Inventary: MonoBehaviour
     }
     public void AddToQuickInventary(string itemName)
     {
-        var amountItem = itemsQuickInventary.Find((i) => GetFormatingName(i) == GetFormatingName(itemName));
+        var amountItem = ItemsQuickInventary.Find((i) => GetFormatingName(i) == GetFormatingName(itemName));
         Debug.Log(itemName);
         int amountItemInt = default;
         if (amountItem != null)
@@ -144,14 +154,14 @@ public class Inventary: MonoBehaviour
         {
             amountItemInt = int.Parse(GetFormatingAmount(itemName));
         }
-        itemsQuickInventary.Add(itemName);
+        ItemsQuickInventary.Add(itemName);
         List<string> listAllCurItem = new List<string>();
-        foreach (var item in itemsQuickInventary)
+        foreach (var item in ItemsQuickInventary)
         {
             listAllCurItem.Add(GetFormatingName(item));
         }
-        itemsQuickInventary.RemoveAll((i) => GetFormatingName(i) == GetFormatingName(itemName));
-        itemsQuickInventary.Add(GetFormatingName(itemName) + "," + amountItemInt);
+        ItemsQuickInventary.RemoveAll((i) => GetFormatingName(i) == GetFormatingName(itemName));
+        ItemsQuickInventary.Add(GetFormatingName(itemName) + "," + amountItemInt);
     }
     string GetFormatingName(string itemName)
     {

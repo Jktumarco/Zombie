@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using CodeMonkey.Utils;
 using Pathfinding;
@@ -6,17 +5,11 @@ using Pathfinding;
 
 public class Riffle : State, Enemy.IEnemyTargetable
 {
-    RiffleSetup _riffleSetup;
-    CharacterSetup _characterSetup;
-    private bool isEnter = false;
+    private RiffleSetup _riffleSetup;
+    private CharacterSetup _characterSetup;
     private Transform transform;
-    private bool IsSelectionCharacter = false;
 
-
-    private Animator animator;
-    private InputsController mousInput;
-    [SerializeField] Transform textPOs;
-    [SerializeField] Vector3 offset;
+    private Animator _animator;
     private AILerp _aiLerp;
 
     private EnemyVision _enemyVision;
@@ -25,22 +18,20 @@ public class Riffle : State, Enemy.IEnemyTargetable
 
     private Transform _target;
     private float _smooth = 56f;
-    bool isBusy;
-    Character character;
+    private Character _character;
 
-    bool _isTryChaking;
-    bool isOverUi;
+    private bool _isTryChaking;
 
-    public Riffle(CharacterSetup characterSetup, RiffleSetup riffleSetup)
+    public Riffle(CharacterSetup character_Setup, RiffleSetup riffle_Setup)
     {
-        this.animator = characterSetup.animator;
-        this._riffleSetup = riffleSetup;
-        this.transform = characterSetup.characterTransform;
-        this._aiLerp = characterSetup.aiLerp;
-        this._enemyVision = characterSetup.enemyVision;
-        this._target = characterSetup.wayTargetPoint;
-        this._characterSetup = characterSetup;
-        this.character = characterSetup.character;
+        this._animator = character_Setup.Animator;
+        this._riffleSetup = riffle_Setup;
+        this.transform = character_Setup.CharacterTransform;
+        this._aiLerp = character_Setup.AiLerp;
+        this._enemyVision = character_Setup.EnemyVision;
+        this._target = character_Setup.WayTargetPoint;
+        this._characterSetup = character_Setup;
+        this._character = character_Setup.Character;
     }
 
 
@@ -53,7 +44,7 @@ public class Riffle : State, Enemy.IEnemyTargetable
     }
     public override void Enter()
     {
-        animator.Play("Idle_riffle");
+        _animator.Play("Idle_riffle");
         base.Enter();  
     }
     public override void Exit()
@@ -89,7 +80,7 @@ public class Riffle : State, Enemy.IEnemyTargetable
                 var curEnemy = hit.Find(x => x.collider.GetComponent<Enemy>()).collider?.GetComponent<Enemy>();
                 if (curEnemy != null && curEnemy == _enemyTarget)
                 {
-                    if (_timeBetweenShoot <= 0 && character.inventary.CheckingBullet("magazine_riffle"))
+                    if (_timeBetweenShoot <= 0 && _character.Inventary.CheckingBullet("magazine_riffle"))
                     {
                         OnShoot(_enemyTarget, _enemyTarget.GetPosition());
                         Character.OnShoot?.Invoke();
@@ -121,7 +112,7 @@ public class Riffle : State, Enemy.IEnemyTargetable
 
     void OnShoot(Enemy enemyStriker, Vector2 raycastHit)
     {
-        animator.Play("Shoot_riffle");
+        _animator.Play("Shoot_riffle");
         CinemachineShake.Instance.ShakeCamera(_riffleSetup.CameraShakeSetup().intensity, _riffleSetup.CameraShakeSetup().time);
         enemyStriker.Damage(this, _riffleSetup.Damage(), raycastHit);
         _aiLerp.enableRotation = false;
@@ -130,7 +121,7 @@ public class Riffle : State, Enemy.IEnemyTargetable
     void ChangeTargetPointPos(float speed)
     {
         var pos = UtilsClass.GetMouseWorldPosition();
-        animator.Play("Walk_riffle");
+        _animator.Play("Walk_riffle");
         var go = GameObject.Find("Cursor");
         go.transform.position = pos;
         go.GetComponentInChildren<Animator>().Play("Cursor");
@@ -150,36 +141,31 @@ public class Riffle : State, Enemy.IEnemyTargetable
     }
     void MainLogic()
     {
-        if (_isTryChaking) { if (_aiLerp.reachedEndOfPath == true) { _aiLerp.enableRotation = false; animator.Play("Idle_riffle"); _isTryChaking = false; isBusy = false; } }
+        if (_isTryChaking) { if (_aiLerp.reachedEndOfPath == true) { _aiLerp.enableRotation = false; _animator.Play("Idle_riffle"); _isTryChaking = false; /*isBusy = false; */} }
         if (_timeBetweenShoot > 0)
         {
             _timeBetweenShoot -= Time.deltaTime;
         }
-        if (_aiLerp.reachedEndOfPath == true) { Debug.Log(_aiLerp.reachedEndOfPath); AutomaticStrike(); }
+        if (_aiLerp.reachedEndOfPath == true) { AutomaticStrike(); }
         if (Input.GetMouseButtonUp(0))
         {
             _enemyTarget = null;
             var m = UtilsClass.GetMouseWorldPosition();
             RaycastHit2D rayHit = Physics2D.Raycast(m, m);
-            if (rayHit.collider != null)
-            {
-                Debug.DrawRay(transform.position, rayHit.collider.transform.position - transform.position, Color.red, _riffleSetup.FiringRange());
-            }
+            //if (rayHit.collider != null)
+            //{
+            //    Debug.DrawRay(transform.position, rayHit.collider.transform.position - transform.position, Color.red, _riffleSetup.FiringRange());
+            //}
             if (rayHit.collider != null)
             {
                 Enemy enemyStriker = rayHit.collider.GetComponent<Enemy>();
                 if (enemyStriker != null)
                 {
-                    Debug.Log(enemyStriker);
                     var distance = Vector2.Distance(transform.position, enemyStriker.GetPosition());
                     if (distance <= _riffleSetup.FiringRange())
                     {
                         _target.position = transform.position; _aiLerp.enableRotation = false;
-                        _enemyTarget = enemyStriker; _timeBetweenShoot = _riffleSetup.TimeBetweenShoot(); Debug.Log(rayHit.collider.name);
-                        //var go = GameObject.Find("CursorAttack");
-                        //go.transform.position = m;
-                        //go.SetActive(true);
-                        //go.GetComponentInChildren<Animator>().Play("CursorAttack");
+                        _enemyTarget = enemyStriker; _timeBetweenShoot = _riffleSetup.TimeBetweenShoot(); 
                     }
                     else if (distance >= _riffleSetup.FiringRange()) { ChangeTargetPointPos(8f); _isTryChaking = true; }
                 }

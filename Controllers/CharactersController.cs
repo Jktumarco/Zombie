@@ -1,20 +1,22 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CodeMonkey;
 using CodeMonkey.Utils;
 using System;
 
 public class CharactersController : MonoBehaviour
 {
-   public static CharactersController instance;
+    public static CharactersController instance;
     public Action OnSelect;
-    public Inventary curInventary;
-    public Character curCharacter;
+    [SerializeField] private Inventary curInventary;
+    [SerializeField] private Character curCharacter;
     [SerializeField] private Transform selectionAreaTransform;
     private Vector3 startPosition;
     [SerializeField] private List<Character> selectedCharacterList;
     [SerializeField] bool canSelection;
+
+    public Inventary CurInventary { get => curInventary; set => curInventary = value; }
+    public Character CurCharacter { get => curCharacter; set => curCharacter = value; }
+
     private void Awake()
     {
         instance = this;
@@ -75,7 +77,7 @@ public class CharactersController : MonoBehaviour
                 {
                     Debug.Log(character.name);
                     selectedCharacterList.Add(character);
-                    curInventary = character.inventary;
+                    CurInventary = character.Inventary;
                 }
             }
         }

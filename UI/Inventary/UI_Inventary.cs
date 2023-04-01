@@ -30,16 +30,16 @@ public class UI_Inventary : UI_Base
     } 
     public void UIUpdate()
     {
-        for (int i = 0; i < InventaryCharacter.itemsMainInventary.Count; i++)
+        for (int i = 0; i < InventaryCharacter.ItemsMainInventary.Count; i++)
         {
             if (upInventaryPanels != null)
             {
-                if (IsItemExistInPanelList(InventaryCharacter.itemsMainInventary[i]))
+                if (IsItemExistInPanelList(InventaryCharacter.ItemsMainInventary[i]))
                 { 
-                    var curItem = GetPlaceByNameItem(InventaryCharacter.itemsMainInventary[i]); 
-                    curItem.TextAmount.text = UtilsClass.GetByFormatTextByIndex(InventaryCharacter.itemsMainInventary[i], 1);
+                    var curItem = GetPlaceByNameItem(InventaryCharacter.ItemsMainInventary[i]); 
+                    curItem.TextAmount.text = UtilsClass.GetByFormatTextByIndex(InventaryCharacter.ItemsMainInventary[i], 1);
                 }
-                if (!IsItemExistInPanelList(InventaryCharacter.itemsMainInventary[i]))
+                if (!IsItemExistInPanelList(InventaryCharacter.ItemsMainInventary[i]))
                 { 
                    
                     var freePlace = GetFreePanel();
@@ -47,18 +47,18 @@ public class UI_Inventary : UI_Base
 
                     var go = Factorys.instance.FactoryInventaryItem.GetNewInstance();
                     go.transform.SetParent(freePlace.gameObject.transform);
-                    go.transform.position = freePlace.transformPlace.position;
+                    go.transform.position = freePlace.TransformPlace.position;
                     freePlace.ItemImage = go.GetComponent<Image>();
                     var textAmount = go.GetComponentInChildren<Text>();
                     freePlace.ItemImage.material = GameAsset.i.m_unlitDefault;
-                    var nameTexture = UtilsClass.GetByFormatTextByIndex(InventaryCharacter.itemsMainInventary[i], 0);
-                    var amount = UtilsClass.GetByFormatTextByIndex(InventaryCharacter.itemsMainInventary[i], 1);
+                    var nameTexture = UtilsClass.GetByFormatTextByIndex(InventaryCharacter.ItemsMainInventary[i], 0);
+                    var amount = UtilsClass.GetByFormatTextByIndex(InventaryCharacter.ItemsMainInventary[i], 1);
                     freePlace.ItemImage.sprite = GetIconByName(nameTexture);
                     freePlace.TextAmount = textAmount;
                     go.name = nameTexture + "," + amount;
                     freePlace.ImageName = go.name;
 
-                    freePlace.isFree = false;
+                    freePlace.IsFree = false;
                     if (amount != null)
                     {
                         textAmount.text = amount;
@@ -88,7 +88,7 @@ public class UI_Inventary : UI_Base
     void DestroyItemInBothInventry(string itemName)
     {
         var goUp = GetItemInUpInventaryPanelList(itemName);
-        if(goUp!= null) { var inventaryPlace = goUp.transform.GetComponentInParent<InventaryPlace>(); inventaryPlace.isFree = true; inventaryPlace.ImageName = null; Destroy(goUp.gameObject); }
+        if(goUp!= null) { var inventaryPlace = goUp.transform.GetComponentInParent<InventaryPlace>(); inventaryPlace.IsFree = true; inventaryPlace.ImageName = null; Destroy(goUp.gameObject); }
         var goDown = GetItemInDownInventaryPanelList(itemName);
         if (goDown != null) { Destroy(goDown.gameObject); }
     }
@@ -131,8 +131,8 @@ public class UI_Inventary : UI_Base
         foreach (var place in upInventaryPanels)
         {
             OnDragInventary onDragInventary = place.gameObject.GetComponentInChildren<OnDragInventary>();
-            if (onDragInventary == null) { place.isFree = true; }
-            else place.isFree = false;
+            if (onDragInventary == null) { place.IsFree = true; }
+            else place.IsFree = false;
         } 
     }
     void UpdateStateOfPlaceDownInventary()
@@ -141,8 +141,8 @@ public class UI_Inventary : UI_Base
         {
             OnDragInventary onDragInventary = place.gameObject.GetComponentInChildren<OnDragInventary>();
             if (onDragInventary != null) { Debug.Log(onDragInventary); }
-            if (onDragInventary == null) { place.isFree = true; }
-            else place.isFree = false;
+            if (onDragInventary == null) { place.IsFree = true; }
+            else place.IsFree = false;
         }
     }
     InventaryPlace GetPlaceByNameItem(string name)
@@ -163,7 +163,7 @@ public class UI_Inventary : UI_Base
     {
         foreach (var itemPanele in upInventaryPanels)
         { 
-            if (itemPanele != null && itemPanele.isFree) { return itemPanele; }
+            if (itemPanele != null && itemPanele.IsFree) { return itemPanele; }
         }
         return null;
     }
